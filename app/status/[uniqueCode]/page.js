@@ -1,91 +1,56 @@
-"use client";
+"use client"; // This component uses client-side features
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link"; // Import Link dari next/link
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 
-const StatusPage = ({ params }) => {
+// Komponen StatusPage
+const StatusPage = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const uniqueCode = params.uniqueCode; // Ambil uniqueCode dari params
-  const [statusData, setStatusData] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  // Ambil kode unik dari query parameter
+  const uniqueCode = searchParams.get("uniqueCode");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulasi pengambilan data status permohonan berdasarkan uniqueCode
-    const fetchStatusData = async () => {
-      try {
-        // Ganti ini dengan API atau fungsi yang sesuai
-        // Contoh: const response = await fetch(`/api/status/${uniqueCode}`);
-        // const data = await response.json();
-
-        // Simulasi data
-        const data = {
-          status: "diterima",
-          description: "Permohonan Anda telah diterima dan sedang diproses.",
-        };
-
-        setStatusData(data);
-      } catch (err) {
-        setError("Gagal mengambil data status. Silakan coba lagi.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStatusData();
-  }, [uniqueCode]);
-
-  useEffect(() => {
-    // Tampilkan alert jika statusData berhasil dimuat
-    if (statusData) {
-      alert("Permohonan Anda berhasil dikirim!");
+    // Redirect back if no uniqueCode is provided
+    if (!uniqueCode) {
+      setError("Kode unik tidak ditemukan. Silakan coba lagi.");
+      setTimeout(() => {
+        router.push("/status"); // Redirect ke halaman status jika tidak ada uniqueCode
+      }, 3000); // Redirect setelah 3 detik
     }
-  }, [statusData]);
-
-  if (loading) {
-    return <div className="text-center">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="text-red-500 text-center">
-        {error}
-        <button
-          onClick={() => router.push("/status")}
-          className="mt-4 text-blue-500 underline"
-        >
-          Kembali ke halaman cek status
-        </button>
-      </div>
-    );
-  }
+  }, [uniqueCode, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="bg-white shadow rounded-lg p-6 w-full max-w-md text-center">
-        <h1 className="text-2xl font-bold mb-4 text-purple-600">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
+        <h1 className="text-2xl font-bold mb-6 text-center text-purple-600">
           Status Permohonan
         </h1>
-        {statusData && (
+
+        {error ? (
+          // Jika terjadi error (misalnya tidak ada uniqueCode)
+          <p className="text-red-500 text-center">{error}</p>
+        ) : (
           <>
-            <p className="text-xl font-semibold text-green-600">
-              {statusData.status}
+            <p className="text-gray-700 mb-4 text-center">
+              Permohonan Anda berhasil dikirim!
             </p>
-            <p className="text-gray-600 mt-2">{statusData.description}</p>
-            <div className="mt-6">
-              <button
-                onClick={() => router.push("/info")}
-                className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-600 transition duration-200"
-              >
-                Lihat Info
-              </button>
-              <button
-                onClick={() => router.push("/history")}
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200 ml-2"
-              >
-                Riwayat Permohonan
-              </button>
-            </div>
+            {uniqueCode && (
+              <div className="text-lg text-green-600 font-bold text-center">
+                Kode Unik Anda: {uniqueCode}
+              </div>
+            )}
+            <p className="text-gray-700 mt-6 text-center">
+              Gunakan kode unik di atas untuk mengecek status permohonan Anda.
+              <Link href={`/components/FormStatus?uniqueCode=${uniqueCode}`}>
+                <span className="text-blue-500 hover:underline">
+                  Klik disini
+                </span>
+              </Link>
+            </p>
           </>
         )}
       </div>
@@ -93,4 +58,11 @@ const StatusPage = ({ params }) => {
   );
 };
 
-export default StatusPage;
+// Pembungkus dengan Suspense
+const StatusPageWrapper = (props) => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <StatusPage {...props} />
+  </Suspense>
+);
+
+export default StatusPageWrapper;

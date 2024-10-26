@@ -2,8 +2,9 @@
 
 import Link from "next/link"; // Import Link dari next/link
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
+// Komponen StatusPage
 const StatusPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -40,7 +41,7 @@ const StatusPage = () => {
             {uniqueCode && (
               <div className="text-lg text-green-600 font-bold text-center">
                 Kode Unik Anda: {uniqueCode}
-              </div> // Ganti elemen <p> dengan <div>
+              </div>
             )}
             <p className="text-gray-700 mt-6 text-center">
               Gunakan kode unik di atas untuk mengecek status permohonan Anda.
@@ -57,4 +58,11 @@ const StatusPage = () => {
   );
 };
 
-export default StatusPage;
+// Pembungkus dengan Suspense
+const StatusPageWrapper = (props) => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <StatusPage {...props} />
+  </Suspense>
+);
+
+export default StatusPageWrapper;
