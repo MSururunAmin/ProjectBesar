@@ -13,7 +13,7 @@ const AdminDashboard = () => {
     } else {
       setAdminName("Admin User"); // Nama admin bisa didapat dari data API
     }
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     // Logika logout admin

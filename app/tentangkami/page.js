@@ -38,8 +38,8 @@ const TentangKami = () => {
 
           <h3 className="text-xl font-semibold text-blue-800 mb-3">Visi</h3>
           <p className="text-gray-700 mb-6">
-            "Terwujudnya Tata Kelola Pemerintahan yang Berbasis Teknologi
-            Informasi dan Komunikasi untuk Kesejahteraan Masyarakat."
+            &quot;Terwujudnya Tata Kelola Pemerintahan yang Berbasis Teknologi
+            Informasi dan Komunikasi untuk Kesejahteraan Masyarakat.&quot;
           </p>
 
           <h3 className="text-xl font-semibold text-blue-800 mb-3">Misi</h3>

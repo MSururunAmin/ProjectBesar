@@ -30,27 +30,32 @@ const FAQPage = () => {
     },
   ];
 
+  // Buat state untuk melacak FAQ mana yang terbuka
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-xl">
         <h1 className="text-3xl font-bold mb-6 text-center text-purple-600">
           Frequently Asked Questions (FAQ)
         </h1>
-        {faqs.map((faq, index) => {
-          const [isOpen, setIsOpen] = useState(false); // State untuk setiap FAQ
-
-          return (
-            <div key={index} className="mb-4">
-              <h2
-                className="text-lg font-semibold text-purple-800 cursor-pointer"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                {faq.question}
-              </h2>
-              {isOpen && <p className="text-gray-700 mt-2">{faq.answer}</p>}
-            </div>
-          );
-        })}
+        {faqs.map((faq, index) => (
+          <div key={index} className="mb-4">
+            <h2
+              className="text-lg font-semibold text-purple-800 cursor-pointer"
+              onClick={() => toggleFAQ(index)}
+            >
+              {faq.question}
+            </h2>
+            {openIndex === index && (
+              <p className="text-gray-700 mt-2">{faq.answer}</p>
+            )}
+          </div>
+        ))}
         <div className="text-center mt-6">
           <button
             onClick={() => window.history.back()}
